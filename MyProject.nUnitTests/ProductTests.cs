@@ -1,7 +1,22 @@
+using System;
+
 namespace MyProject.nUnitTests
 {
     public class ProductTests
     {
+        private readonly int DEFAULT_PRODUCT_ID = 1;
+        private readonly string DEFAULT_PRODUCT_NAME = "Test Product";
+        private readonly decimal DEFAULT_PRODUCT_PRICE = 500m;
+        private readonly int DEFAULT_PRODUCT_STOCK = 100;
+
+        private Product _product { get; set; } = null;
+
+        [SetUp]
+        public void Setup()
+        {
+            _product = new(DEFAULT_PRODUCT_ID, DEFAULT_PRODUCT_NAME, DEFAULT_PRODUCT_PRICE, DEFAULT_PRODUCT_STOCK);
+        }
+
         [Test]
         public void ProductID_ShouldBeSetCorrectly()
         {
@@ -9,69 +24,83 @@ namespace MyProject.nUnitTests
             int expectedProductID = 1;
 
             // Act
-            Product product = new Product(expectedProductID, "Testing Product", 9.99m, 99);
+            _product.ProductID = expectedProductID;
 
             // Assert
-            Assert.That(expectedProductID, Is.EqualTo(product.ProductID));
+            Assert.That(_product.ProductID, Is.EqualTo(expectedProductID));
         }
 
         [Test]
         public void ProductID_ShouldThrowException_ForLessThanMinimunValue()
         {
             // Arrange
-            int expectedProductID = 0;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Product ID should be between 1 to 1000.";
+            int testProductID = 0;
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(expectedProductID, "Invalid Product", 9.99m, 99));
+            // Act
+            Exception exception = Assert.Catch(() => _product.ProductID = testProductID);
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
         public void ProductID_ShouldThrowException_ForMoreThanMaximunValue()
         {
             // Arrange
-            int expectedProductID = 1001;
-            //
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(expectedProductID, "Invalid Product", 9.99m, 99));
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Product ID should be between 1 to 1000.";
+            int testProductID = 1001;
+
+            // Act
+            Exception exception = Assert.Catch(() => _product.ProductID = testProductID);
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
-        public void ProductName_ShouldBeSetCorrectly_Test1()
+        public void ProductName_ShouldBeSetCorrectly_Constructor()
         {
             // Arrange
             string expectedProductName = "Product 1";
 
             // Act
-            Product product = new Product(1, expectedProductName, 9.99m, 99);
+            Product product = new Product(DEFAULT_PRODUCT_ID, expectedProductName, DEFAULT_PRODUCT_PRICE, DEFAULT_PRODUCT_STOCK);
 
             // Assert
-            Assert.That(expectedProductName, Is.EqualTo(product.ProductName));
+            Assert.That(product.ProductName, Is.EqualTo(expectedProductName));
         }
 
         [Test]
-        public void ProductName_ShouldBeSetCorrectly_Test2()
+        public void ProductName_ShouldBeSetCorrectly_AttributeAssignment()
         {
             // Arrange
             string expectedProductName = "Product 2";
 
             // Act
-            Product product = new Product(1, expectedProductName, 9.99m, 99);
+            _product.ProductName = expectedProductName;
 
             // Assert
-            Assert.That(expectedProductName, Is.EqualTo(product.ProductName));
+            Assert.That(_product.ProductName, Is.EqualTo(expectedProductName));
         }
 
         [Test]
-        public void ProductName_ShouldBeSetCorrectly_Test3()
+        public void ProductName_ShouldThrowException_NullAttributeAssignment()
         {
             // Arrange
-            string expectedProductName = "Product 3";
+            var expectedException = typeof(ArgumentNullException);
+            var expectedMessage = "Product name can't be null.";
 
             // Act
-            Product product = new Product(1, expectedProductName, 9.99m, 99);
+            Exception exception = Assert.Catch(() => _product.ProductName = null);
 
             // Assert
-            Assert.That(expectedProductName, Is.EqualTo(product.ProductName));
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
@@ -81,10 +110,10 @@ namespace MyProject.nUnitTests
             decimal expectedPrice = 9.99m;
 
             // Act
-            Product product = new Product(1, "Testing Product", expectedPrice, 99);
+            _product.Price = expectedPrice;
 
             // Assert
-            Assert.That(expectedPrice, Is.EqualTo(product.Price));
+            Assert.That(_product.Price, Is.EqualTo(expectedPrice));
         }
 
         [Test]
@@ -92,9 +121,15 @@ namespace MyProject.nUnitTests
         {
             // Arrange
             decimal testPrice = 0;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Price should be between $1 to $5000.";
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(1, "Invalid Product", testPrice, 99));
+            // Act
+            Exception exception = Assert.Catch(() => _product.Price = testPrice);
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
@@ -102,9 +137,15 @@ namespace MyProject.nUnitTests
         {
             // Arrange
             decimal testPrice = 5001;
-            //
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(1, "Invalid Product", testPrice, 99));
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Price should be between $1 to $5000.";
+
+            // Act
+            Exception exception = Assert.Catch(() => _product.Price = testPrice);
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
@@ -114,10 +155,10 @@ namespace MyProject.nUnitTests
             int expectedStock = 99;
 
             // Act
-            Product product = new Product(1, "Testing Product", 9.99m, expectedStock);
+            _product.Stock = expectedStock;
 
             // Assert
-            Assert.That(expectedStock, Is.EqualTo(product.Stock));
+            Assert.That(_product.Stock, Is.EqualTo(expectedStock));
         }
 
         [Test]
@@ -125,9 +166,15 @@ namespace MyProject.nUnitTests
         {
             // Arrange
             int testStock = 0;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Stock should be between 1 to 1000.";
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(1, "Invalid Product", 9.99m, testStock));
+            // Act
+            Exception exception = Assert.Catch(() => _product.Stock = testStock);
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
@@ -135,87 +182,112 @@ namespace MyProject.nUnitTests
         {
             // Arrange
             int testStock = 1001;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Stock should be between 1 to 1000.";
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(1, "Invalid Product", 9.99m, testStock));
+            // Act
+            Exception exception = Assert.Catch(() => _product.Stock = testStock);
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
         public void IncreaseStock_ShouldIncreaseStockCorrectly()
         {
             // Arrange
-            Product product = new Product(1, "Testing Product", 9.99m, 10);
-            int increaseValue = 5;
-            int expectedStock = 15;
+            _product.Stock = 100;
+            int increaseValue = 50;
+            int expectedStock = 150;
 
             // Act
-            product.IncreaseStock(increaseValue);
+            _product.IncreaseStock(increaseValue);
 
             // Assert
-            Assert.That(expectedStock, Is.EqualTo(product.Stock));
+            Assert.That(_product.Stock, Is.EqualTo(expectedStock));
         }
 
         [Test]
         public void IncreaseStock_ShouldThrowException_ForNegativeValue()
         {
             // Arrange
-            int stockValue = 1;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Value should be greater than zero.";
             int increaseValue = -1;
-            Product product = new Product(1, "Testing Product", 9.99m, stockValue);
+            _product.Stock = 1;
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => product.IncreaseStock(increaseValue));
+            // Act
+            Exception exception = Assert.Catch(() => _product.IncreaseStock(increaseValue));
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
         public void IncreaseStock_ShouldThrowException_ForMoreThanStockValue()
         {
             // Arrange
-            int stockValue = 1;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Stock can be more than 1000.";
             int increaseValue = 1001;
-            Product product = new Product(1, "Testing Product", 9.99m, stockValue);
+            _product.Stock = 1;
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => product.IncreaseStock(increaseValue));
+            // Act
+            Exception exception = Assert.Catch(() => _product.IncreaseStock(increaseValue));
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
         public void DecreaseStock_ShouldDecreaseStockCorrectly()
         {
             // Arrange
-            Product product = new Product(1, "Testing Product", 9.99m, 100);
+            _product.Stock = 100;
             int decreaseValue = 10;
             int expectedStock = 90;
 
             // Act
-            product.DecreaseStock(decreaseValue);
+            _product.DecreaseStock(decreaseValue);
 
             // Assert
-            Assert.That(expectedStock, Is.EqualTo(product.Stock));
+            Assert.That(_product.Stock, Is.EqualTo(expectedStock));
         }
 
         [Test]
         public void DecreaseStock_ShouldThrowException_ForNegativeValue()
         {
             // Arrange
-            int stockValue = 1;
-            int decreaseValue = -5;
-            Product product = new Product(1, "Testing Product", 9.99m, stockValue);
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Value should be greater than zero.";
+            int decreaseValue = -1;
 
-            // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => product.DecreaseStock(decreaseValue));
+            // Act
+            Exception exception = Assert.Catch(() => _product.DecreaseStock(decreaseValue));
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         [Test]
         public void DecreaseStock_ShouldThrowException_ForValueGreaterThanStock()
         {
             // Arrange
-            int stockValue = 1;
+            var expectedException = typeof(ArgumentOutOfRangeException);
+            var expectedMessage = "Stock is low";
             int decreaseValue = 2;
-            Product product = new Product(1, "Testing Product", 9.99m, stockValue);
+            _product.Stock = 1;
 
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => product.DecreaseStock(decreaseValue));
+            // Act
+            Exception exception = Assert.Catch(() => _product.DecreaseStock(decreaseValue));
+
+            // Assert
+            Assert.That(exception.GetType(), Is.EqualTo(expectedException));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
     }
 
